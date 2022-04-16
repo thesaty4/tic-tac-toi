@@ -1,0 +1,232 @@
+.//############################################################################
+//################ Developed & Designed by - Satya Narayan Mishra ############
+//############################################################################
+//@copyright - 2022
+
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+#include<windows.h>
+char playBoard[10] = {'o','1','2','3','4','5','6','7','8','9'};
+
+//************************************Prototypes ****************************************
+int checkWin();
+void board();
+void endBanner();
+void printDesign(char *str);
+void options();
+void errorSound();
+//************************************Prototypes ****************************************
+
+void main()
+{
+	int player = 1,status,choice;
+	char mark,repeatOpt;
+    while(1){
+        do
+        {
+            // options();
+            board(); //print the board
+            player=(player%2)?1:2; //##oddNumber -> player1,     ##Even Number -> player2
+            printf("Player %d Enter a Number ",player);
+            scanf("%d",&choice);
+
+            mark=(player == 1) ? 'X' : 'O';
+            if (choice == 1 && playBoard[1] == '1')
+                playBoard[1] = mark;
+            else if (choice == 2 && playBoard[2] == '2')
+                playBoard[2] = mark;
+            else if (choice == 3 && playBoard[3] == '3')
+                playBoard[3] = mark;
+            else if (choice == 4 && playBoard[4] == '4')
+                playBoard[4] = mark;
+            else if (choice == 5 && playBoard[5] == '5')
+                playBoard[5] = mark;
+            else if (choice == 6 && playBoard[6] == '6')
+                playBoard[6] = mark;
+            else if (choice == 7 && playBoard[7] == '7')
+                playBoard[7] = mark;
+            else if (choice == 8 && playBoard[8] == '8')
+                playBoard[8] = mark;
+            else if (choice == 9 && playBoard[9] == '9')
+                playBoard[9] = mark;
+            else
+            {
+
+                printf("\033[0;31m "); 
+                printDesign("\t    Oops ! Invalid Move        \t   ");
+                printf("\033[0;37m "); 
+                printf("\n Press Any Key to continue ! ");
+                errorSound();
+                // player--;
+                player=1;
+                getch(); // Hold the screen <---------
+            }
+            status =checkWin();
+            if(status==-1)
+                player++;
+        }while(status==-1);
+        board();
+
+        if(status==1){
+                // char playerStr=to_string(player);
+            char str[10];
+            char msg[]="\tWinner player is : ";
+            itoa(player,str,10); // integer to string
+            printDesign(strcat(strcat(msg,str),"\t\t   "));
+                
+            //Wininig Sound 5 Time
+            for(int i=0;i<5;i++)
+                Beep(400,800);
+
+            printf("\033[0;33m Do you want play again (y/n) ? \033[0;37m");
+            repeatOpt=getche();
+            if(repeatOpt == 'y' || repeatOpt == 'Y'){
+
+                //Reseting the board and player
+                player=1;
+                for(int i=0;i<10;i++){
+                    playBoard[i]=i+'0';
+                }
+                continue; // Reset Entire Process
+            }else{
+                endBanner();
+                exit(1);
+            }
+        }else{
+            printf("\033[1;31m");
+            printDesign("\t\tGame Draw ! \t\t   ");
+            for(int i=0;i<4;i++)
+            printf("\033[0;37m"); 
+
+            Beep(300,800);
+
+            printf("\033[0;33m Do you want play again (y/n) ? \033[0;37m");
+            repeatOpt=getche();
+            if(repeatOpt == 'y' || repeatOpt == 'Y'){
+
+                //Reseting the board and player
+                player=1;
+                for(int i=0;i<10;i++)
+                    playBoard[i]=i+'0';
+                
+                continue;
+            }else{
+                endBanner();
+                exit(1);
+            }
+
+        }
+
+        break;
+    }
+    return ;
+}
+
+/*------------ GENERATE ERROR SOUND ------------ */
+void errorSound(){
+    for(int i=0;i<5;i++)
+        Beep(3000,500);
+}
+
+
+/*********************************************
+	FUNCTION TO RETURN GAME STATUS
+	1 FOR GAME IS OVER WITH RESULT
+	-1 FOR GAME IS IN PROGRESS
+	O GAME IS OVER AND NO RESULT
+**********************************************/
+int checkWin()
+{
+	if (playBoard[1] == playBoard[2] && playBoard[2] == playBoard[3])
+		return 1;
+	else if (playBoard[4] == playBoard[5] && playBoard[5] == playBoard[6])
+		return 1;
+	else if (playBoard[7] == playBoard[8] && playBoard[8] == playBoard[9])
+		return 1;
+	else if (playBoard[1] == playBoard[4] && playBoard[4] == playBoard[7])
+		return 1;
+	else if (playBoard[2] == playBoard[5] && playBoard[5] == playBoard[8])
+		return 1;
+	else if (playBoard[3] == playBoard[6] && playBoard[6] == playBoard[9])
+		return 1;
+	else if (playBoard[1] == playBoard[5] && playBoard[5] == playBoard[9])
+		return 1;
+	else if (playBoard[3] == playBoard[5] && playBoard[5] == playBoard[7])
+		return 1;
+	else if (playBoard[1] != '1' && playBoard[2] != '2' && playBoard[3] != '3' && playBoard[4] != '4' && playBoard[5] != '5' && playBoard[6] != '6' && playBoard[7] != '7' && playBoard[8] != '8' && playBoard[9] != '9')
+		return 0;
+	else
+		return -1;
+}
+
+
+/*******************************************************************
+     FUNCTION TO DRAW BOARD OF TIC TAC TOE WITH PLAYERS MARK
+********************************************************************/
+void board()
+{
+    system("cls");
+    printDesign(" # WELCOME TO Tic TaC Toe GAME WORLD #    ");
+	printf("\033[1;33m|\033[1;37m  Player 1 (X)  -  \033[0;32m Player 2 (O)                        \033[1;33m|\033[1;37m\n");
+    printf("\033[1;33m|________________________________________________________|\n|\t\t\t\t\t\t\t |\033[1;37m\n");
+	printf("\033[1;33m|\033[1;37m\t\t        |     |     \t\t\t \033[1;33m|\033[1;37m\n"); 
+	printf("\033[1;33m|\033[1;37m\t\t     %c  |  %c  |  %c \t\t\t \033[1;33m|\033[1;37m\n",playBoard[1],playBoard[2],playBoard[3]);
+	printf("\033[1;33m|\033[1;37m\t\t   _____|_____|_____\t\t\t \033[1;33m|\033[1;37m\n");
+	printf("\033[1;33m|\033[1;37m\t\t        |     |    \t\t\t \033[1;33m|\033[1;37m\n");
+	printf("\033[1;33m|\033[1;37m\t\t     %c  |  %c  |  %c \t\t\t \033[1;33m|\033[1;37m\n",playBoard[4],playBoard[5],playBoard[6]);
+	printf("\033[1;33m|\033[1;37m\t\t   _____|_____|_____\t\t\t \033[1;33m|\033[1;37m\n");
+	printf("\033[1;33m|\033[1;37m\t\t        |     |     \t\t\t \033[1;33m|\033[1;37m\n");
+	printf("\033[1;33m|\033[1;37m\t\t     %c  |  %c  |  %c \t\t\t \033[1;33m|\033[1;37m\n",playBoard[7],playBoard[8],playBoard[9]);
+	printf("\033[1;33m|\033[1;37m\t\t        |     |     \t\t\t \033[1;33m|\033[1;37m\n\033[1;33m|\033[1;37m\t\t\t\t\t\t\t \033[1;33m|\033[1;37m\n");
+    printf("\033[1;33m|________________________________________________________|\033[1;37m\n\n");
+}
+
+
+void printDesign(char *str){
+    printf("\033[1;33m"); //set color as yellow
+    printf(" \n ________________________________________________________\n");
+    printf("+--------------------------------------------------------+");
+    printf("\n| \t %s      | ",str);
+    printf("\n|________________________________________________________|\n");
+    printf("\033[0;37m"); //set color as red
+}
+
+void endBanner(){
+    printf("\033[1;31m"); //set color as red
+    printf("\n\n ________________________________________________________\n");
+    printf("+--------------------------------------------------------+");
+    printf("\n| \t I HOPE YOU ENJOY THIS GAME, THANK YOU ! :)      | ");
+    printf("\n|________________________________________________________|\n");
+    printf("\033[0;37m"); //set color as black
+}
+
+
+// void options(){
+//     system("cls");
+//     int opt;
+//     printDesign(" # WELCOME TO Tic TaC Toe GAME WORLD #    ");
+// 	printf("|  Player 1 (X)  -  Player 2 (O)                         |\n");
+//     printf("|________________________________________________________|\n|\t\t\t\t\t\t\t |\n");
+//     printf("| 1 > PLAY \t\t\t\t\t\t |\n");
+//     printf("| 2 > ABOUT DEVELOPER \t\t\t\t\t |\n");
+//     printf("| 3 > EXIT \t\t\t\t\t\t |\n");
+//     // printf("|\n|\t\t\t\t\t\t\t |\n");
+//     printf("|________________________________________________________|\n");
+//     printf("| \n");
+//     printf("| Enter Option : ");
+//     scanf("%d",opt);
+//     switch (opt)
+//     {
+//     case 1:
+//         board();
+//         break;
+//     case 2:
+//         // about();
+//         break;
+//     default:
+//         errorSound();
+//         break;
+//     }
+
+// }
